@@ -15,6 +15,9 @@ import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router";
 import { useCreateOrderMutation } from "@/lib/api";
 import { toast } from "sonner";
+import { useUpdateProductMutation, useGetProductQuery } from "@/lib/api";
+
+
 
 const formSchema = z.object({
   line_1: z.string().min(1),
@@ -37,24 +40,37 @@ const ShippingAddressForm = ({ cart }) => {
   const form = useForm({
     resolver: zodResolver(formSchema),
   });
-  const [createOrder, { isLoading, isError, data }] = useCreateOrderMutation();
-  const navigate = useNavigate();
-  console.log(cart);
 
-  function handleSubmit(values) {
-    createOrder({
-      items: cart,
-      shippingAddress: {
-        line_1: values.line_1,
-        line_2: values.line_2,
-        city: values.city,
-        state: values.state,
-        zip_code: values.zip_code,
-        phone: values.phone,
-      },
-    });
-    toast.success("Checkout successful");
-    navigate("/shop/payment");
+  const [createOrder, { isLoading, isError, data }] = useCreateOrderMutation();
+  const [updateProduct] = useUpdateProductMutation();
+  const navigate = useNavigate();
+
+
+  const productQueries = cart.map((item) => useGetProductQuery(item.product._id));
+
+  async function handleSubmit(values) {
+    try {
+    
+      await Promise.all(productQueries.map(async ({ data: product }, index) => {
+        if (!product) throw new Error(`Product ${cart[index].product._id} not found`);
+        
+        const newStock = product.stock - cart[index].quantity;
+
+        await updateProduct({ id: cart[index].product._id, stock: newStock }).unwrap();
+      }));
+
+   
+      await createOrder({
+        items: cart,
+        shippingAddress: values
+      }).unwrap();
+
+      toast.success("Checkout successful");
+      navigate("/shop/payment");
+    } catch (error) {
+      toast.error(error.message || "Error processing checkout");
+      console.error("Checkout error:", error);
+    }
   }
 
   return (

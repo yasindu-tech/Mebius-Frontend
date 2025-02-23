@@ -17,7 +17,7 @@ function AdminProductCreatePage() {
     name: z.string().min(1, "Product name is required"),
     price: z.number().min(0, "Price must be a positive number"),
     description: z.string().min(1, "Description is required"),
-    categoryId: z.string().min(1, "Category is required"),
+    categoryID: z.string().min(1, "Category is required"),
     image: z.string().min(1, "Image URL is required"),
     stock: z.number().min(0, "Stock must be a positive number"),
   });
@@ -28,7 +28,7 @@ function AdminProductCreatePage() {
       name: "",
       price: 0,
       description: "",
-      categoryId: "",
+      categoryID: "",
       image: "",
       stock: 0,
     },

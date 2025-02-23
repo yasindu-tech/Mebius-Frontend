@@ -2,7 +2,7 @@ import { useGetProductsQuery, useDeleteProductMutation } from "../../lib/api";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { toast } from "sonner";
-
+import { ProductUpdateDialog } from "./components/product-update-dialog";
 const UpdateProducts = () => {
   const {
     data: products = [],
@@ -57,9 +57,7 @@ const UpdateProducts = () => {
               <p className="text-sm">Stock: {product.stock || "N/A"}</p>
             </CardContent>
             <CardFooter className="flex justify-between">
-              <Button onClick={() => handleUpdate(product._id)} className="bg-black text-white hover:bg-gray-00">
-                Update
-              </Button>
+            <ProductUpdateDialog product={product} onUpdate={refetchProducts}/>
               <Button
                 onClick={() => handleDelete(product._id)}
                 variant="outline"

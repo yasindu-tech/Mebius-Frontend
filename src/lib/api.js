@@ -6,7 +6,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const Api = createApi({
   reducerPath: "Api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://mebius-backend-yasindug.onrender.com/api/",
+    baseUrl: "http://localhost:8000/api/",
     prepareHeaders: async (headers, { getState }) => {
       const token = await window.Clerk?.session?.getToken();
       if (token) {
@@ -35,6 +35,13 @@ export const Api = createApi({
     }),
     getProduct: builder.query({
       query: (id) => `products/${id}`,
+    }),
+    updateProduct: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `products/${id}`,
+        method: "PUT",
+        body,
+      }),
     }),
     getCategories: builder.query({
       query: () => `categories`,
@@ -69,6 +76,7 @@ export const {
   useGetOrderQuery,
   useGetOrderByUserQuery,
   useCreateProductMutation,
-  useDeleteProductMutation
+  useDeleteProductMutation,
+  useUpdateProductMutation,
 
 } = Api;

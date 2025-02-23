@@ -61,7 +61,7 @@ createRoot(document.getElementById("root")).render(
 
               </Route>
             </Route>
-          </Route>
+          
           <Route element={<AdminLayout />} >
             <Route element={<Protected />}>
               <Route element={<AdminProtected />}>
@@ -69,6 +69,7 @@ createRoot(document.getElementById("root")).render(
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/products/create" element={<AdminProductCreatePage />}/>
               </Route>
+          </Route>
           </Route>
           </Route>
     
