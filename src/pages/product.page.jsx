@@ -8,6 +8,8 @@ import { useGetProductQuery } from "@/lib/api";
 import { useDispatch,useSelector } from 'react-redux'
 import { addToCart } from "@/lib/features/cartSlice";
 import { toggleSave } from "@/lib/features/savedSlice";
+import Footer from "@/components/footer";
+import RelatedProducts from "@/components/RelatedProducts";
 
 
 export default function ProductPage() {
@@ -106,11 +108,11 @@ export default function ProductPage() {
                 </div>
 
                 <div className="flex flex-col gap-3 sm:flex-row">
-                  <Button className="flex-1" size="lg" onClick={handleClick}>
+                  <Button className="flex-1 text-white bg-emerald-700" size="lg" onClick={handleClick}>
                     Add to Cart
                   </Button>
                   <Button variant="outline" size="lg"  onClick={handleSaveClick}>
-                    <Heart  className={`mr-2 h-5 w-5 cursor-pointer ${isSaved ? "fill-red-500" : ""}`}  />
+                    <Heart  className={`mr-2 h-5 w-5 cursor-pointer ${isSaved ? "fill-emerald-700" : ""}`}  />
                     Add to Wishlist
                   </Button>
                 </div>
@@ -119,6 +121,8 @@ export default function ProductPage() {
           </div>
         </div>
       </div>
+
+    <RelatedProducts productId={product._id} />
     </div>
   );
 }

@@ -6,7 +6,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const Api = createApi({
   reducerPath: "Api",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://mebius-backend-yasindug.onrender.com/api/",
+    baseUrl: "http://localhost:8000/api/",
     prepareHeaders: async (headers, { getState }) => {
       const token = await window.Clerk?.session?.getToken();
       if (token) {
@@ -61,12 +61,18 @@ export const Api = createApi({
         method: "POST",
         body,
       }),
+      deleteUser: builder.mutation({
+        query: (userId) => ({
+          url: `users/${userId}`,  
+          method: "DELETE",
+        }),
+      }),
+      
     }),
   }),
 });
 
-// Export hooks for usage in functional components, which are
-// auto-generated based on the defined endpoints
+
 export const {
   useGetProductsQuery,
   useGetProductQuery,

@@ -29,6 +29,8 @@ import ProductPage from "./pages/product.page";
 import AdminProductCreatePage from "./pages/admin/admin-product-create.page";
 import AdminPage from "./pages/admin/admin.page";
 import UpdateProducts from "./pages/admin/admin-update-product";
+import AboutPage from "./pages/about.page";
+import ContactPage from "./pages/contact.page";
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY;
 
@@ -48,8 +50,9 @@ createRoot(document.getElementById("root")).render(
               <Route path="/shop" element={<ShopPage />} />
               <Route path="/shop/saved" element={<SavedPage />} />
               <Route path="/product/:id" element={<ProductPage />} />
-
-              {/* The Protected layout can be used to wrap routes that needs to be logged in to access */}
+              <Route path="/about" element={<AboutPage/>} />
+              <Route path="/contact" element={<ContactPage/>} />
+             
               <Route element={<Protected />}>
                 <Route path="/shop/cart" element={<CartPage />} />
                 <Route path="/shop/checkout" element={<CheckoutPage />} />
@@ -57,8 +60,7 @@ createRoot(document.getElementById("root")).render(
                 <Route path="/shop/complete" element={<CompletePage />} />
                 <Route path="/account" element={<AccountPage />} />
 
-                {/* The AdminProtected layout can be used to wrap routes that needs to be logged in as admin to access */}
-
+                
               </Route>
             </Route>
           
