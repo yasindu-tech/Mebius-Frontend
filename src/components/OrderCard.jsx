@@ -5,12 +5,16 @@ export default function OrderCard({ order }) {
   const totalAmount = order.items.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
 
   const getStatusColor = (status) => {
-    switch (status.toLowerCase()) {
-      case "delivered":
-        return "bg-green-100 text-green-800";
-      case "processing":
+    switch (status.toUpperCase()) {
+      case "PENDING":
         return "bg-yellow-100 text-yellow-800";
-      case "cancelled":
+      case "CONFIRMED":
+        return "bg-blue-100 text-blue-800";
+      case "SHIPPED":
+        return "bg-purple-100 text-purple-800";
+      case "DELIVERED":
+        return "bg-green-100 text-green-800";
+      case "CANCELLED":
         return "bg-red-100 text-red-800";
       default:
         return "bg-gray-100 text-gray-800";
@@ -40,11 +44,12 @@ export default function OrderCard({ order }) {
           <div>
             <h4 className="text-lg font-semibold">Order #{order._id}</h4>
             <p className="text-sm text-gray-600">{order.items.length} item(s)</p>
+            <p className="text-sm text-gray-600">Order placed on: {new Date(order.createdAt).toLocaleDateString()}</p>
           </div>
         </div>
         <div className="flex space-x-2">
           <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.orderStatus)}`}>
-            {order.status}
+            {order.orderStatus}
           </span>
           <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getPaymentStatusColor(order.paymentStatus)}`}>
             {order.paymentStatus}

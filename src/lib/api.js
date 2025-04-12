@@ -1,13 +1,11 @@
 // Need to use the React-specific entry point to import createApi
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 
-
 // Define a service using a base URL and expected endpoints
 export const Api = createApi({
   reducerPath: "Api",
   baseQuery: fetchBaseQuery({
-    // baseUrl: "http://localhost:8000/api/"
-    baseUrl:"https://mebius-backend-yasindug.onrender.com/api/",
+    baseUrl: "http://localhost:8000/api/",
     prepareHeaders: async (headers, { getState }) => {
       const token = await window.Clerk?.session?.getToken();
       if (token) {
@@ -62,17 +60,21 @@ export const Api = createApi({
         method: "POST",
         body,
       }),
-      deleteUser: builder.mutation({
-        query: (userId) => ({
-          url: `users/${userId}`,  
-          method: "DELETE",
-        }),
-      }),
-      
     }),
+    deleteUser: builder.mutation({
+      query: (userId) => ({
+        url: `users/${userId}`,
+        method: "DELETE",
+      }),
+    }),
+    getUser: builder.mutation({
+      query: (userId) => ({
+        url: `user/${userId}`,
+        method: "GET",
+      }),
+    })
   }),
 });
-
 
 export const {
   useGetProductsQuery,
@@ -85,5 +87,6 @@ export const {
   useCreateProductMutation,
   useDeleteProductMutation,
   useUpdateProductMutation,
-
+  useDeleteUserMutation, 
+  useGetUserMutation,
 } = Api;

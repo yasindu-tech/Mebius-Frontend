@@ -40,18 +40,15 @@ function ShopPage() {
       updatedProducts = updatedProducts.filter((prod) => prod.categoryID === selectedCategoryId)
     }
 
-    // Filter by search query
+    // Filter by search query (name only)
     if (searchQuery.trim() !== "") {
       const query = searchQuery.toLowerCase()
-      updatedProducts = updatedProducts.filter(
-        (prod) =>
-          prod.name.toLowerCase().includes(query) ||
-          (prod.description && prod.description.toLowerCase().includes(query)),
+      updatedProducts = updatedProducts.filter((prod) =>
+        prod.name.toLowerCase().includes(query)
       )
     }
 
-
-
+    // Sort by price
     if (sortOption === "ascending") {
       updatedProducts.sort((a, b) => Number.parseFloat(a.price) - Number.parseFloat(b.price))
     } else {
@@ -90,7 +87,6 @@ function ShopPage() {
   if (isProductLoading || isCategoryLoading) {
     return (
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Shop Hero */}
         <div className="py-8 mb-6">
           <div className="flex items-center gap-2 mb-2">
             <ShoppingBag className="h-6 w-6 text-emerald-600" />
@@ -98,20 +94,17 @@ function ShopPage() {
           </div>
           <Skeleton className="h-6 w-full max-w-2xl mb-6" />
 
-          {/* Search and Sort Skeleton */}
           <div className="flex flex-col md:flex-row gap-4 mb-6">
             <Skeleton className="h-10 flex-grow" />
             <Skeleton className="h-10 w-40" />
           </div>
 
-          {/* Category Tabs Skeleton */}
           <div className="flex gap-2 overflow-x-auto pb-2 mb-8">
             {[...Array(5)].map((_, i) => (
               <Skeleton key={i} className="h-10 w-24 flex-shrink-0" />
             ))}
           </div>
 
-          {/* Products Grid Skeleton */}
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
             {[...Array(8)].map((_, i) => (
               <div key={i} className="space-y-4">
@@ -151,7 +144,6 @@ function ShopPage() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      {/* Shop Hero */}
       <div className="py-8 mb-6">
         <div className="flex items-center gap-2 mb-2">
           <ShoppingBag className="h-6 w-6 text-emerald-600" />
@@ -205,7 +197,6 @@ function ShopPage() {
 
         {/* Category Tabs */}
         <div className="flex items-center gap-4 overflow-x-auto pb-2 mb-6">
-
           {categories.map((category) => (
             <Tab
               key={category._id}

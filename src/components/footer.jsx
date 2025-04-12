@@ -3,8 +3,8 @@ import { Separator } from "@/components/ui/separator"
 
 function Footer() {
   return (
-    <footer className="bg-gray-50 pt-12 pb-8 px-8">
-      <div className="max-w-7xl mx-auto">
+    <footer className="bg-gray-50 pt-12 pb-8 px-8 md:px-16 lg:px-24">
+      <div className="max-w-screen mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
           {/* Brand Column */}
           <div className="space-y-4">
