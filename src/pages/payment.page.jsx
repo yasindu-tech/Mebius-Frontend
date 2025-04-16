@@ -80,7 +80,7 @@ function PaymentPage() {
             </div>
 
             <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="mb-6">
-              <div className="flex items-center space-x-2 border p-4 rounded-md mb-3 opacity-50 pointer-events-none">
+              <div className="flex items-center space-x-2 border p-4 rounded-md opacity-50 pointer-events-none">
                 <RadioGroupItem value="credit-card" id="credit-card" />
                 <Label htmlFor="credit-card" className="flex-1 cursor-not-allowed">
                   Credit Card
@@ -141,7 +141,6 @@ function PaymentPage() {
             {paymentMethod === "COD" && (
               <div className="text-center p-6 bg-gray-50 rounded-md">
                 <p className="text-gray-600 mb-4">You can pay when items arrived</p>
-                <div className="h-12 w-24 bg-blue-500 rounded mx-auto"></div>
               </div>
             )}
           </div>
