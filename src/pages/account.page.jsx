@@ -132,14 +132,42 @@ function AccountPage() {
 
             <Separator className="my-4" />
 
-            <Button
-              variant="outline"
-              className="w-full border-red-200 text-red-600 hover:bg-red-50"
-              onClick={handleDeleteAccount}
-              disabled={isDeleting}
-            >
-              {isDeleting ? "Deleting..." : "Delete Account"}
-            </Button>
+            <AlertDialog open={open} onOpenChange={setOpen}>
+                      <AlertDialogTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className="border-red-200 text-red-600 hover:bg-red-50"
+                          onClick={() => setOpen(true)}
+                        >
+                          {" "}
+                          Delete Account
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>
+                            Are you absolutely sure?
+                          </AlertDialogTitle>
+                          <AlertDialogDescription>
+                            This action cannot be undone. This will permanently
+                            delete your account and remove your data from our
+                            servers.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel disabled={isDeleting}>
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleDeleteAccount}
+                            disabled={isDeleting}
+                            className="bg-red-600 text-white hover:bg-red-700"
+                          >
+                            {isDeleting ? "Deleting..." : "Delete"}
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
           </div>
         </div>
 

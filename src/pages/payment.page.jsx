@@ -80,9 +80,9 @@ function PaymentPage() {
             </div>
 
             <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="mb-6">
-              <div className="flex items-center space-x-2 border p-4 rounded-md mb-3">
+              <div className="flex items-center space-x-2 border p-4 rounded-md mb-3 opacity-50 pointer-events-none">
                 <RadioGroupItem value="credit-card" id="credit-card" />
-                <Label htmlFor="credit-card" className="flex-1 cursor-pointer">
+                <Label htmlFor="credit-card" className="flex-1 cursor-not-allowed">
                   Credit Card
                 </Label>
                 <div className="flex gap-2">
@@ -91,10 +91,18 @@ function PaymentPage() {
                   <div className="h-8 w-12 bg-gray-800 rounded"></div>
                 </div>
               </div>
-              <div className="flex items-center space-x-2 border p-4 rounded-md">
+              <div className="flex items-center space-x-2 border p-4 rounded-md opacity-50 pointer-events-none">
                 <RadioGroupItem value="paypal" id="paypal" />
-                <Label htmlFor="paypal" className="flex-1 cursor-pointer">
+                <Label htmlFor="paypal" className="flex-1 cursor-not-allowed">
                   PayPal
+                </Label>
+                <div className="h-8 w-12 bg-blue-500 rounded"></div>
+              </div>
+
+              <div className="flex items-center space-x-2 border p-4 rounded-md">
+                <RadioGroupItem value="COD" id="COD" />
+                <Label htmlFor="COD" className="flex-1 cursor-pointer">
+                  Cash on Delivery
                 </Label>
                 <div className="h-8 w-12 bg-blue-500 rounded"></div>
               </div>
@@ -126,6 +134,13 @@ function PaymentPage() {
             {paymentMethod === "paypal" && (
               <div className="text-center p-6 bg-gray-50 rounded-md">
                 <p className="text-gray-600 mb-4">You'll be redirected to PayPal to complete your purchase securely.</p>
+                <div className="h-12 w-24 bg-blue-500 rounded mx-auto"></div>
+              </div>
+            )}
+
+            {paymentMethod === "COD" && (
+              <div className="text-center p-6 bg-gray-50 rounded-md">
+                <p className="text-gray-600 mb-4">You can pay when items arrived</p>
                 <div className="h-12 w-24 bg-blue-500 rounded mx-auto"></div>
               </div>
             )}
