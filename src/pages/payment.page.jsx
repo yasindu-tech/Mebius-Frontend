@@ -47,7 +47,8 @@ function PaymentPage() {
   const handlePlaceOrder = async () => {
     if (paymentMethod === "credit-card") {
       try {
-      
+        setIsProcessing(true);
+        
         const items = cart.map(item => ({
           product: {
             name: item.product.name,
@@ -55,42 +56,45 @@ function PaymentPage() {
           },
           quantity: item.quantity
         }));
-
-
-  const response = await createCheckoutSession({ orderId, items });
-  console.log("Raw response:", response);     
-  const data = await createCheckoutSession({ orderId, items }).unwrap();
-  console.log("Unwrapped data:", data);
-
-  const stripe = await stripePromise;
-  const { error } = await stripe.redirectToCheckout({
-    sessionId: data.id,
-  });
-
-  if (error) throw error;
-
+  
+        // Make only one API call
+        const { data } = await createCheckoutSession({ orderId, items });
+        
+        if (!data?.id) {
+          throw new Error("No session ID returned from server");
+        }
+  
+        const stripe = await stripePromise;
+        const { error } = await stripe.redirectToCheckout({
+          sessionId: data.id,
+        });
+  
+        if (error) {
+          throw error;
+        }
+  
       } catch (error) {
         console.error("Payment error:", error);
         toast.error("Payment failed", {
           description: error.message || "Could not process payment",
         });
+        setIsProcessing(false);
       }
     } else {
-      // COD logic
-      setIsProcessing(true)
+      // COD logic remains the same
+      setIsProcessing(true);
       setTimeout(() => {
-        orderPlacedRef.current = true
-        dispatch(clearCart())
+        orderPlacedRef.current = true;
+        dispatch(clearCart());
         toast.success("Order placed successfully!", {
           description: "Thank you for your purchase!",
           icon: <CheckCircle className="h-4 w-4 text-green-500" />,
-        })
-  
-        navigate(`/shop/complete?orderId=${orderId}`)
-        setIsProcessing(false)
-      }, 1500)
+        });
+        navigate(`/shop/complete?orderId=${orderId}`);
+        setIsProcessing(false);
+      }, 1500);
     }
-  }
+  };
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
