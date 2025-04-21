@@ -47,7 +47,7 @@ function PaymentPage() {
   const handlePlaceOrder = async () => {
     if (paymentMethod === "credit-card") {
       try {
-        // Format items for the backend
+      
         const items = cart.map(item => ({
           product: {
             name: item.product.name,
@@ -57,9 +57,10 @@ function PaymentPage() {
         }));
 
 
-
+  const response = await createCheckoutSession({ orderId, items });
+  console.log("Raw response:", response);     
   const data = await createCheckoutSession({ orderId, items }).unwrap();
-
+  console.log("Unwrapped data:", data);
 
   const stripe = await stripePromise;
   const { error } = await stripe.redirectToCheckout({
