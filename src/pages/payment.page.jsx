@@ -56,9 +56,10 @@ function PaymentPage() {
           },
           quantity: item.quantity
         }));
-  
-        // Make only one API call
-        const { data } = await createCheckoutSession({ orderId, items });
+
+        console.log("Items to be sent to Stripe:", items);
+        console.log("Order ID:", orderId);
+          const { data } = await createCheckoutSession({ orderId, items });
         
         if (!data?.id) {
           throw new Error("No session ID returned from server");
