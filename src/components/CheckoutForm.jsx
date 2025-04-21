@@ -11,7 +11,7 @@ const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
 const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
 const BASE_URL = import.meta.env.VITE_BASE_URL;
-
+console.log("BASE_URL", BASE_URL);
 const CheckoutForm = ({ orderId }) => {
   const fetchClientSecret = useCallback(() => {
     // Create a Checkout Session
