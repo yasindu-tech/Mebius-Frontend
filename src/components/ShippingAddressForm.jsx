@@ -60,13 +60,19 @@ const ShippingAddressForm = ({ cart }) => {
       }));
 
    
-      await createOrder({
+      const createdOrder = await createOrder({
         items: cart,
         shippingAddress: values
       }).unwrap();
 
+      const orderId = createdOrder._id;
+
+
+
+
       toast.success("Checkout successful");
-      navigate("/shop/payment");
+      navigate(`/shop/payment?orderId=${orderId}`);
+;
     } catch (error) {
       toast.error(error.message || "Error processing checkout");
       console.error("Checkout error:", error);

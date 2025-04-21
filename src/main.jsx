@@ -29,6 +29,10 @@ import AdminProductCreatePage from "./pages/admin/admin-product-create.page"
 import UpdateProducts from "./pages/admin/admin-update-product"
 import SignInPage from "./pages/sign-in.page"
 import SignUpPage from "./pages/sign-up.page"
+import AddCategory from "./pages/admin/admin-add-category"
+import UpdateCategory from "./pages/admin/admin-update-category"
+import PaymentCancelPage from "./pages/payment-cancel.page"
+
 
 const PUBLISHABLE_KEY = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -37,6 +41,7 @@ if (!PUBLISHABLE_KEY) {
 }
 
 createRoot(document.getElementById("root")).render(
+
   <ClerkProvider publishableKey={PUBLISHABLE_KEY} afterSignOutUrl="/">
     <Provider store={store}>
       <BrowserRouter>
@@ -50,7 +55,7 @@ createRoot(document.getElementById("root")).render(
               <Route path="/product/:id" element={<ProductPage />} />
               <Route path="/about" element={<AboutPage />} />
               <Route path="/contact" element={<ContactPage />} />
-
+              <Route path="/cancel=true" element={<PaymentCancelPage />} />
               
               <Route element={<Protected />}>
                 <Route path="/shop/cart" element={<CartPage />} />
@@ -58,6 +63,7 @@ createRoot(document.getElementById("root")).render(
                 <Route path="/shop/payment" element={<PaymentPage />} />
                 <Route path="/shop/complete" element={<CompletePage />} />
                 <Route path="/account" element={<AccountPage />} />
+
               </Route>
             </Route>
 
@@ -68,6 +74,8 @@ createRoot(document.getElementById("root")).render(
                   <Route path="/admin" element={<AdminPage />} />
                   <Route path="/admin/products/create" element={<AdminProductCreatePage />} />
                   <Route path="/admin/products/update" element={<UpdateProducts />} />
+                  <Route path="/admin/categories/add" element={<AddCategory/>} />
+                  <Route path="/admin/categories/update" element={<UpdateCategory/>} />
                 </Route>
               </Route>
             </Route>
@@ -80,4 +88,5 @@ createRoot(document.getElementById("root")).render(
       </BrowserRouter>
     </Provider>
   </ClerkProvider>
+
 )

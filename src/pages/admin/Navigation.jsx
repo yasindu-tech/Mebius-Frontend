@@ -15,7 +15,7 @@ export function Navigation() {
   return (
     <nav className="flex items-center justify-between p-4 bg-background border-b">
       <div className="flex items-center space-x-4">
-        <Link href="/admin" className="text-xl font-bold">
+        <Link to="/admin" className="text-xl font-bold">
           Admin Dashboard
         </Link>
         <NavigationMenu>
@@ -80,28 +80,12 @@ export function Navigation() {
                 </ul>
               </NavigationMenuContent>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link href="/admin/orders" legacyBehavior passHref>
-                <NavigationMenuLink className="group inline-flex h-10 w-max items-center justify-center rounded-md bg-background px-4 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground focus:outline-none disabled:pointer-events-none disabled:opacity-50 data-[active]:bg-accent/50 data-[state=open]:bg-accent/50">
-                  <ShoppingCart className="mr-2 h-4 w-4" />
-                  Orders
-                </NavigationMenuLink>
-              </Link>
-            </NavigationMenuItem>
+     
           </NavigationMenuList>
         </NavigationMenu>
       </div>
       <div className="flex items-center space-x-4">
-        <SignedOut>
-          <div className="flex items-center gap-4">
-            <Link href="/sign-in" className="text-primary">
-              Sign In
-            </Link>
-            <Link href="/sign-up" className="text-primary">
-              Sign Up
-            </Link>
-          </div>
-        </SignedOut>
+     
         <SignedIn>
           <UserButton />
           <Link href="/account" className="flex items-center">

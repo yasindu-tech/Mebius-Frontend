@@ -1,4 +1,4 @@
-import { useGetOrdersQuery, useGetUserMutation } from "@/lib/api"
+import { useGetOrdersQuery, useGetUserMutation,useUpdateOrderStatusMutation } from "@/lib/api"
 import { useState } from "react"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Search, ChevronDown, ChevronUp, Package, MapPin } from "lucide-react"
-
+import { toast } from "sonner"
 const AdminOrders = () => {
   const { data: orders = [], error, isLoading } = useGetOrdersQuery()
   const [getUserDetails] = useGetUserMutation()
@@ -16,7 +16,18 @@ const AdminOrders = () => {
   const [sortConfig, setSortConfig] = useState({ key: "createdAt", direction: "desc" })
   const [expandedOrder, setExpandedOrder] = useState(null)
 
+  const [updateOrderStatus] = useUpdateOrderStatusMutation()
+  const handleUpdateOrderStatus = async (orderId, orderStatus) => {
+    try {
 
+      await updateOrderStatus({  id: orderId, 
+        orderStatus}).unwrap()
+      toast.success("Order status updated successfully")
+    } catch (error) {
+      toast.error("Failed to update order status")
+      console.error("Update error:", error)
+    }
+  }
 
   const requestSort = (key) => {
     let direction = "asc"
@@ -197,7 +208,7 @@ const AdminOrders = () => {
                         </TableCell>
                         <TableCell>${total.toFixed(2)}</TableCell>
                         <TableCell>
-                          <Select defaultValue={order.orderStatus}>
+                          <Select defaultValue={order.orderStatus} onValueChange={(value) => handleUpdateOrderStatus(order._id, value)}>
                             <SelectTrigger className="w-[130px]">
                               <SelectValue />
                             </SelectTrigger>

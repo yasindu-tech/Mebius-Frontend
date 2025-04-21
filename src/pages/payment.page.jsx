@@ -1,4 +1,3 @@
-"use client"
 
 import { Button } from "@/components/ui/button"
 import { clearCart } from "@/lib/features/cartSlice"
@@ -14,36 +13,82 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import CartItem from "@/components/CartItem"
+import { useSearchParams } from "react-router"
+import { useRef } from "react"
+
+import { loadStripe } from "@stripe/stripe-js"
+import { useCreateCheckoutSessionMutation } from "@/lib/api"
 
 function PaymentPage() {
+  const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+  console.log(import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY)
+  const [searchParams] = useSearchParams()
+  const orderId = searchParams.get("orderId")
   const cart = useSelector((state) => state.cart.value)
   const dispatch = useDispatch()
   const navigate = useNavigate()
-  const [paymentMethod, setPaymentMethod] = useState("credit-card")
+  const [paymentMethod, setPaymentMethod] = useState("COD")
   const [isProcessing, setIsProcessing] = useState(false)
+  const [createCheckoutSession , { isLoading }] = useCreateCheckoutSessionMutation()
+
+  const orderPlacedRef = useRef(false)
+
 
   // Calculate cart totals
   const subtotal = cart.reduce((acc, item) => acc + item.product.price * item.quantity, 0)
   const shipping = subtotal > 0 ? 10 : 0
   const total = subtotal + shipping
 
-  if (cart.length === 0) {
+  if (cart.length === 0 && !orderPlacedRef.current) {
     return <Navigate to="/" />
   }
+  
 
-  const handlePlaceOrder = () => {
-    setIsProcessing(true)
+  const handlePlaceOrder = async () => {
+    if (paymentMethod === "credit-card") {
+      try {
+        // Format items for the backend
+        const items = cart.map(item => ({
+          product: {
+            name: item.product.name,
+            price: item.product.price
+          },
+          quantity: item.quantity
+        }));
 
-    // Simulate order processing
-    setTimeout(() => {
-      dispatch(clearCart())
-      toast.success("Order placed successfully!", {
-        description: "Thank you for your purchase!",
-        icon: <CheckCircle className="h-4 w-4 text-green-500" />,
-      })
-      navigate("/shop/complete?orderId=123456")
-      setIsProcessing(false)
-    }, 1500)
+
+
+  const data = await createCheckoutSession({ orderId, items }).unwrap();
+
+
+  const stripe = await stripePromise;
+  const { error } = await stripe.redirectToCheckout({
+    sessionId: data.id,
+  });
+
+  if (error) throw error;
+
+      } catch (error) {
+        console.error("Payment error:", error);
+        toast.error("Payment failed", {
+          description: error.message || "Could not process payment",
+        });
+      }
+    } else {
+      // COD logic
+      setIsProcessing(true)
+      setTimeout(() => {
+        orderPlacedRef.current = true
+        dispatch(clearCart())
+        toast.success("Order placed successfully!", {
+          description: "Thank you for your purchase!",
+          icon: <CheckCircle className="h-4 w-4 text-green-500" />,
+        })
+  
+        navigate(`/shop/complete?orderId=${orderId}`)
+        setIsProcessing(false)
+      }, 1500)
+    }
   }
 
   return (
@@ -80,9 +125,9 @@ function PaymentPage() {
             </div>
 
             <RadioGroup value={paymentMethod} onValueChange={setPaymentMethod} className="mb-6">
-              <div className="flex items-center space-x-2 border p-4 rounded-md opacity-50 pointer-events-none">
+              <div className="flex items-center space-x-2 border p-4 rounded-md ">
                 <RadioGroupItem value="credit-card" id="credit-card" />
-                <Label htmlFor="credit-card" className="flex-1 cursor-not-allowed">
+                <Label htmlFor="credit-card" className="flex-1 cursor-pointer">
                   Credit Card
                 </Label>
                 <div className="flex gap-2">
@@ -91,9 +136,9 @@ function PaymentPage() {
                   <div className="h-8 w-12 bg-gray-800 rounded"></div>
                 </div>
               </div>
-              <div className="flex items-center space-x-2 border p-4 rounded-md opacity-50 pointer-events-none">
+              <div className="flex items-center space-x-2 border p-4 rounded-md ">
                 <RadioGroupItem value="paypal" id="paypal" />
-                <Label htmlFor="paypal" className="flex-1 cursor-not-allowed">
+                <Label htmlFor="paypal" className="flex-1 cursor-pointer">
                   PayPal
                 </Label>
                 <div className="h-8 w-12 bg-blue-500 rounded"></div>
@@ -109,26 +154,7 @@ function PaymentPage() {
             </RadioGroup>
 
             {paymentMethod === "credit-card" && (
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="card-name">Name on Card</Label>
-                  <Input id="card-name" placeholder="John Doe" />
-                </div>
-                <div>
-                  <Label htmlFor="card-number">Card Number</Label>
-                  <Input id="card-number" placeholder="1234 5678 9012 3456" />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="expiry">Expiry Date</Label>
-                    <Input id="expiry" placeholder="MM/YY" />
-                  </div>
-                  <div>
-                    <Label htmlFor="cvv">CVV</Label>
-                    <Input id="cvv" placeholder="123" />
-                  </div>
-                </div>
-              </div>
+                <p className="text-sm text-gray-600">You’ll be redirected to a secure Stripe page to complete your payment.</p>
             )}
 
             {paymentMethod === "paypal" && (

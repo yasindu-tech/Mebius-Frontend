@@ -4,7 +4,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 export const Api = createApi({
   reducerPath: "Api",
   baseQuery: fetchBaseQuery({
-   
+    
+    //  baseUrl: "http://localhost:8000/api/",
     baseUrl: "https://mebius-backend-yasindug.onrender.com/api/",
     prepareHeaders: async (headers, { getState }) => {
       const token = await window.Clerk?.session?.getToken();
@@ -45,6 +46,26 @@ export const Api = createApi({
     getCategories: builder.query({
       query: () => `categories`,
     }),
+    createCategory: builder.mutation({
+      query: (body) => ({
+        url: `categories`,
+        method: "POST",
+        body,
+      }),
+    }),
+    deleteCategory: builder.mutation({
+      query: (id) => ({
+        url: `categories/${id}`,
+        method: "DELETE",
+      }),
+    }),
+    updateCategory: builder.mutation({
+      query: ({ id, ...body }) => ({
+        url: `categories/${id}`,
+        method: "PUT",
+        body,
+      }),
+    }),
     getOrders: builder.query({
       query: () => `orders/all`,
     }),
@@ -72,7 +93,22 @@ export const Api = createApi({
         url: `user/${userId}`,
         method: "GET",
       }),
-    })
+    }),
+    updateOrderStatus: builder.mutation({
+      query: ({ id, orderStatus }) => ({
+        url: `orders/${id}`,
+        method: "PUT",
+        body: { orderStatus },
+      }),
+    }),
+    createCheckoutSession: builder.mutation({
+      query: (body) => ({
+        url: "payment/create-checkout-session",
+        method: "POST",
+        body,
+      }),
+    }),
+      
   }),
 });
 
@@ -89,4 +125,9 @@ export const {
   useUpdateProductMutation,
   useDeleteUserMutation, 
   useGetUserMutation,
+  useCreateCategoryMutation,
+  useDeleteCategoryMutation,
+  useUpdateCategoryMutation,
+  useUpdateOrderStatusMutation,
+  useCreateCheckoutSessionMutation,
 } = Api;
