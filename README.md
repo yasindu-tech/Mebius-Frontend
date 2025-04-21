@@ -7,7 +7,7 @@
 - **Frontend**: React, Redux Toolkit, RTK Query, Tailwind CSS, ShadCN UI
 - **Authentication**: Clerk
 - **Payments**: Stripe
-- **Backend**: Node.js, Express, MongoDB ([View Repository](https://github.com/yasindu-tech/Mebius-Backend))
+- **Backend**: Node.js, Express,Typescript MongoDB ([View Repository](https://github.com/yasindu-tech/Mebius-Backend))
 
 ## ✨ Features
 
