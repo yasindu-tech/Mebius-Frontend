@@ -1,4 +1,4 @@
-"use client"
+
 import { useGetCategoriesQuery, useGetProductsQuery } from "@/lib/api"
 import { useState, useEffect } from "react"
 import { Skeleton } from "@/components/ui/skeleton"

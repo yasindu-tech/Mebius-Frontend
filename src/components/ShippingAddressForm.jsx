@@ -17,8 +17,6 @@ import { useCreateOrderMutation } from "@/lib/api";
 import { toast } from "sonner";
 import { useUpdateProductMutation, useGetProductQuery } from "@/lib/api";
 
-
-
 const formSchema = z.object({
   line_1: z.string().min(1),
   line_2: z.string().min(1),
@@ -45,34 +43,49 @@ const ShippingAddressForm = ({ cart }) => {
   const [updateProduct] = useUpdateProductMutation();
   const navigate = useNavigate();
 
-
   const productQueries = cart.map((item) => useGetProductQuery(item.product._id));
 
   async function handleSubmit(values) {
     try {
-    
-      await Promise.all(productQueries.map(async ({ data: product }, index) => {
-        if (!product) throw new Error(`Product ${cart[index].product._id} not found`);
-        
-        const newStock = product.stock - cart[index].quantity;
+      // Ensure all products have their stock updated
+      await Promise.all(
+        productQueries.map(async ({ data: product }, index) => {
+          if (!product) throw new Error(`Product ${cart[index].product._id} not found`);
 
-        await updateProduct({ id: cart[index].product._id, stock: newStock }).unwrap();
+          const newStock = product.stock - cart[index].quantity;
+
+          await updateProduct({ id: cart[index].product._id, stock: newStock }).unwrap();
+        })
+      );
+
+      console.log("Items in cart:", cart);
+      console.log("Shipping address values:", values);
+
+      cart.forEach((item) => {
+        console.log("Item in cart:", item);
+        console.log("stripePriceId:", item.product.stripePriceId);
+      });
+      // Add stripePriceId to each item in the cart
+      const itemsWithStripePriceId = cart.map((item) => ({
+      
+        ...item,
+        product: {
+          ...item.product,
+          stripePriceId: item.product.stripePriceId, 
+        },
+
       }));
 
-   
+      // Create the order
       const createdOrder = await createOrder({
-        items: cart,
-        shippingAddress: values
+        items: itemsWithStripePriceId,
+        shippingAddress: values,
       }).unwrap();
 
       const orderId = createdOrder._id;
 
-
-
-
       toast.success("Checkout successful");
       navigate(`/shop/payment?orderId=${orderId}`);
-;
     } catch (error) {
       toast.error(error.message || "Error processing checkout");
       console.error("Checkout error:", error);

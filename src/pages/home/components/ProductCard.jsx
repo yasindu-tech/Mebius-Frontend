@@ -33,6 +33,7 @@ function ProductCard(props) {
         price: props.price,
         image: props.image,
         description: props.description,
+        stripePriceId: props.stripePriceId,
       }),
     )
   }

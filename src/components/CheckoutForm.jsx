@@ -1,47 +1,39 @@
-// src/components/CheckoutForm.js
-import React, { useState } from 'react';
-import { CardElement, useStripe, useElements } from '@stripe/react-stripe-js';
-import { useCreatePaymentIntentMutation } from '../features/api/apiSlice';
+import { useEffect } from "react";
+import { useCreateCheckoutSessionMutation } from "../lib/api";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  EmbeddedCheckout,
+  EmbeddedCheckoutProvider,
+} from "@stripe/react-stripe-js";
+import { useCallback } from "react";
 
-const CheckoutForm = () => {
-  const stripe = useStripe();
-  const elements = useElements();
-  const [createPaymentIntent] = useCreatePaymentIntentMutation();
-  const [error, setError] = useState(null);
-  const [processing, setProcessing] = useState(false);
-  const [succeeded, setSucceeded] = useState(false);
+const STRIPE_PUBLISHABLE_KEY = import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY;
+const stripePromise = loadStripe(STRIPE_PUBLISHABLE_KEY);
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    setProcessing(true);
+const BASE_URL = import.meta.env.VITE_BASE_URL;
 
-    const { data } = await createPaymentIntent({ amount: 1000, currency: 'usd' });
-
-    const payload = await stripe.confirmCardPayment(data.clientSecret, {
-      payment_method: {
-        card: elements.getElement(CardElement),
+const CheckoutForm = ({ orderId }) => {
+  const fetchClientSecret = useCallback(() => {
+    // Create a Checkout Session
+    return fetch(`${BASE_URL}/api/payments/create-checkout-session`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
       },
-    });
+      body: JSON.stringify({ orderId }),
+    })
+      .then((res) => res.json())
+      .then((data) => data.clientSecret);
+  }, []);
 
-    if (payload.error) {
-      setError(`Payment failed: ${payload.error.message}`);
-      setProcessing(false);
-    } else {
-      setError(null);
-      setProcessing(false);
-      setSucceeded(true);
-    }
-  };
+  const options = { fetchClientSecret };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <CardElement />
-      <button disabled={processing || succeeded}>
-        {processing ? 'Processing…' : 'Pay Now'}
-      </button>
-      {error && <div>{error}</div>}
-      {succeeded && <div>Payment succeeded!</div>}
-    </form>
+    <div id="checkout">
+      <EmbeddedCheckoutProvider stripe={stripePromise} options={options}>
+        <EmbeddedCheckout />
+      </EmbeddedCheckoutProvider>
+    </div>
   );
 };
 

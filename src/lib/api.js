@@ -5,7 +5,7 @@ export const Api = createApi({
   reducerPath: "Api",
   baseQuery: fetchBaseQuery({
     
-    //baseUrl: "http://localhost:5000/api/",
+    // baseUrl: "http://localhost:5000/api/",
     baseUrl: "https://mebius-backend-yasindug.onrender.com/api/",
     prepareHeaders: async (headers, { getState }) => {
       const token = await window.Clerk?.session?.getToken();
@@ -102,12 +102,15 @@ export const Api = createApi({
       }),
     }),
     createCheckoutSession: builder.mutation({
-      query: (body) => ({
-        url: "payment/create-checkout-session",
+      query: () => ({
+        url: `payments/create-checkout-session`,
         method: "POST",
-        body,
       }),
     }),
+    getCheckoutSessionStatus: builder.query({
+      query: (sessionId) => `payments/session-status?session_id=${sessionId}`,
+    }),
+   
       
   }),
 });
@@ -130,4 +133,5 @@ export const {
   useUpdateCategoryMutation,
   useUpdateOrderStatusMutation,
   useCreateCheckoutSessionMutation,
+  useGetCheckoutSessionStatusQuery,
 } = Api;
